@@ -1,3 +1,8 @@
+# Lab 04 - Docker
+
+## Table of content
+
+
 1. [Identify issues and install the tools](#task-0)
 2. [Add a process supervisor to run several processes](#task-1)
 3. [Add a tool to manage membership in the web server cluster](#task-2)
@@ -5,8 +10,12 @@
 5. [Use a template engine to easily generate configuration files](#task-4)
 6. [Generate a new load balancer configuration when membership changes](#task-5)
 7. [Make the load balancer automatically reload the new configuration](#task-6)
+8. Difficulties
+9. Conclusion
 
 
+
+## Tasks
 
 ### <a name="task-0"></a>Task 0: Identify issues and install the tools
 
@@ -79,7 +88,7 @@
    
    ```
 
-2. Give the answer to the question about the existing problem with the current solution.
+2. Give the answer to the question about the existing problem with the current solution. (Anyway, in our current solution, there is kind of misconception around the way we create the `Serf` cluster. In the deliverables, describe which problem exists with the current solution based on the previous explanations and remarks. Propose a solution to solve the issue.)
 
 3. Give an explanation on how `Serf` is working. Read the official website to get more details about the `GOSSIP` protocol used in `Serf`. Try to find other solutions that can be used to solve similar situations where we need some auto-discovery mechanism.
 
@@ -171,3 +180,11 @@
 2. Give your own feelings about the final solution. Propose improvements or ways to do the things differently. If any, provide references to your readings for the improvements.
 
 3. (Optional:) Present a live demo where you add and remove a backend container.
+
+
+
+## Difficulties
+
+Task 1 : 
+
+## Conclusion
