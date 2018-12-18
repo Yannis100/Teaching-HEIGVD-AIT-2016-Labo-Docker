@@ -73,7 +73,14 @@
 
 > Installing a cluster membership management tool will help us to solve the problem we detected in [M4](#M4). In fact, we will start to use what we put in place with the solution to issue [M5](#M5). We will build two images with our process supervisor running the cluster membership management tool `Serf`.
 
-**Deliverables**:
+When we reach this point, we have a problem. If we start the HAProxy first, it will not start as the two `s1` and `s2` containers are not started and we try to link them through the Docker `run` command.
+
+You can try and get the logs. You will see error logs where `s1` and `s2` If we start `s1` and `s2` nodes before `ha`, we will have an error from `Serf`.
+They try to connect the `Serf` cluster via `ha` container which is not running.
+
+So the reverse proxy is not working but what we can do at least is to start the containers beginning by `ha` and then backend nodes. It will make the `Serf` part working and that's what we are working on at the moment and in the next task.
+
+Deliverables**:
 
 1. Provide the docker log output for each of the containers: `ha`, `s1` and `s2`. You need to create a folder `logs` in your repository to store the files separately from the lab report. For each lab task create a folder and name it using the task number. No need to create a folder when there are no logs.
 
@@ -88,7 +95,14 @@
    
    ```
 
-2. Give the answer to the question about the existing problem with the current solution. (Anyway, in our current solution, there is kind of misconception around the way we create the `Serf` cluster. In the deliverables, describe which problem exists with the current solution based on the previous explanations and remarks. Propose a solution to solve the issue.)
+2. Give the answer to the question about the existing problem with the current solution. (Anyway, in our current solution, there is kind of misconception around the way we create the `Serf` cluster. In the deliverables, describe which problem exists with the current solution based on the previous explanations and remarks. Propose a solution to solve the issue.
+
+   When we reach this point, we have a problem. If we start the HAProxy first, it will not start as the two `s1` and `s2` containers are not started and we try to link them through the Docker `run` command.
+
+   You can try and get the logs. You will see error logs where `s1` and `s2` If we start `s1` and `s2` nodes before `ha`, we will have an error from `Serf`.
+   They try to connect the `Serf` cluster via `ha` container which is not running.
+
+   So the reverse proxy is not working but what we can do at least is to start the containers beginning by `ha` and then backend nodes. It will make the `Serf` part working and that's what we are working on at the moment and in the next task.)
 
 3. Give an explanation on how `Serf` is working. Read the official website to get more details about the `GOSSIP` protocol used in `Serf`. Try to find other solutions that can be used to solve similar situations where we need some auto-discovery mechanism.
 
@@ -185,6 +199,24 @@
 
 ## Difficulties
 
-Task 1 : 
+Task 2 :
+
+Pleins de soucis et différentes tentatives de modifier le fichier haproxy.cfg car les nodes backends apparaissent down dans l'interface web haproxy.
+
+Les nodes backend se "présentent" au cluster serf avec le nom de container et non s1 et s2, de plus suite à la création du network spécifique, s1 et s2 ne sont pas résolus dans /etc/hosts tandis qu'avec le network par défaut (bridge) et les paramètres `--link` de la commande run de ha on les retrouve dans le fichier hosts, dans le cas où l'on spécifie notre network crée, les paramètres --link ne semblent n'avoir aucun effet.
+
+Néanmoins on constate que dans le réseau par défaut 'bridge', le nameserver est hérité de virtualbox (/etc/resolv.conf 10.0.2.3) et sans les --link les container n'arriveront pas à se résoudre parmis. Avec notre network 'heig', le nameserver est 127.0.0.11 et résoud bien s1, s2 et ha ainsi que les noms des containers respectifs.
+
+Finalement nous avons entré l'IP en statique dans haproxy.cfg
+
+Task 3 : 
+
+Après la configuration du dockerfile pour copier le run de serf, les fichiers sont bien copiés et au bon endroit, néanmoins des erreurs :
+
+```bash
+: No such file or directory bash
+```
+
+C'était dû aux retours à la ligne au format windows et cela empechait serf de démarrer, il a suffit convertir les sauts de ligne en format Unix
 
 ## Conclusion

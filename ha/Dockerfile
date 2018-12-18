@@ -41,6 +41,10 @@ COPY config/haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
 COPY config/rsyslogd.cfg /etc/rsyslog.d/49-haproxy.conf
 
 # TODO: [HB] Copy the haproxy configuration template
+RUN mkdir /serf-handlers
+COPY scripts /serf-handlers
+RUN chmod +x /serf-handlers/member-join.sh
+RUN chmod +x /serf-handlers/member-leave.sh	
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
