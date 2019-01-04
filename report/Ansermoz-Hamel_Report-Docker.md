@@ -29,13 +29,21 @@
 
 1. <a name="M1"></a>**[M1]** Do you think we can use the current solution for a production environment? What are the main problems when deploying it in a production environment?
 
+     *Le plus grand problème à ce moment de l'implémentation est que "rien" n'est dynamique : si on veut ajouter ou supprimer un serveur backend derrière HAProxy on doit le faire manuellement dans le fichier de config puis rebuild l'image et relancer le container. Dans un environnement de production on aimerait pouvoir plus simplement et en ayant moins voir aucun impact négatif ajouter ou supprimer des serveurs backend*
+
 2. <a name="M2"></a>**[M2]** Describe what you need to do to add new `webapp` container to the infrastructure. Give the exact steps of what you have to do without modifiying the way the things are
    done. Hint: You probably have to modify some configuration and script files in a Docker image.
 
+   *Pour ajouter un webapp (sx), il faut le spécifier à l'avance dans le fichier de config HAProxy (\ha\config\haproxy.cfg) dans la liste des nodes (to be in the balancing mechanism) ainsi que dans \ha\services\ha\run (sed) puis supprimer les containers, rebuild l'image de ha et enfin démarrer `ha` puis les 3 serveurs `webapp`*
+
 3. <a name="M3"></a>**[M3]** Based on your previous answers, you have detected some issues in the current solution. Now propose a better approach at a high level.
+
+     *Il serait préférable d'avoir une infrastructure plus dynamique qui simplifie l'ajout d'un serveur `webapp`sans avoir à manipuler de fichiers de config/scripts, par exemple que le serveur webapp s'enregistre auprès du load balancer et que ce dernier l'ajoute automatiquement à la liste des nodes*
 
 4. <a name="M4"></a>**[M4]** You probably noticed that the list of web application nodes is hardcoded in the load balancer configuration. How can we manage the web app nodes in a more dynamic
      fashion?
+
+     *Avec un outil permettant de gérer les membership d'un cluster. By using some eventhandler (for example webapp node joining) e.g. serf and some scripts that edit HAProxy config on the fly.*
 
 5. <a name="M5"></a>**[M5]** In the physical or virtual machines of a typical infrastructure we tend to have not only one main process (like the web server or the load balancer) running, but a few
    additional processes on the side to perform management tasks.
@@ -44,6 +52,8 @@
    machine that will forward the logs to the central place. (We could also imagine a central tool that reaches out to each machine to gather the logs. That's a push vs. pull problem.) It is quite common to see a push mechanism used for this kind of task.
 
    Do you think our current solution is able to run additional management processes beside the main web server / load balancer process in a container? If no, what is missing / required to reach the goal? If yes, how to proceed to run for example a log forwarding process?
+
+   *Il faut implémenter un outil de supervision, tel que s6. s6-overlay est particulièrement adapté car il inclut aussi les dépendances et une configuration prévue pour une utilisation avec docker*
 
 6. <a name="M6"></a>**[M6]** In our current solution, although the load balancer configuration is changing dynamically, it doesn't follow dynamically the configuration of our distributed system when
    web servers are added or removed. If we take a closer look at the `run.sh` script, we see two calls to `sed` which will replace two lines in the `haproxy.cfg` configuration file just before we start `haproxy`. You clearly see that the configuration file has two lines and the script will replace these two lines.
@@ -288,11 +298,31 @@ https://stackoverflow.com/questions/41764336/how-does-the-new-docker-squash-work
 
 1. Take a screenshots of the HAProxy stat page showing more than 2 web applications running. Additional screenshots are welcome to see a sequence of experimentations like shutting down a node and starting more nodes.
 
+   ![Statistics Report for HAProxy-s1+s2_backend](../logs/task 6/Statistics Report for HAProxy-s1+s2_backend.png)
+
+   S1+S2
+
+   Start S3
+
+   ![Statistics Report for HAProxy-s1+s2+s3_backends](../logs/task 6/Statistics Report for HAProxy-s1+s2+s3_backends.png)
+
+   S1+S2+S3
+
+   Shutdown S1
+
+   ![Statistics Report for HAProxy-s2+s3_backends](../logs/task 6/Statistics Report for HAProxy-s2+s3_backends.png)
+
+   S2+S3
+
    Also provide the output of `docker ps` in a log file. At least one file is expected. You can provide one output per step of your experimentation according to your screenshots.
 
 2. Give your own feelings about the final solution. Propose improvements or ways to do the things differently. If any, provide references to your readings for the improvements.
 
    *Use updated version of the tools*
+
+   *Consul* [HAProxy with consul](https://www.hashicorp.com/blog/haproxy-with-consul)
+
+   *HAProxy restart with _zero_ downtime* [Zero downtime with HAProxy article](http://engineeringblog.yelp.com/2015/04/true-zero-downtime-haproxy-reloads.html)
 
 3. (Optional:) Present a live demo where you add and remove a backend container.
 
