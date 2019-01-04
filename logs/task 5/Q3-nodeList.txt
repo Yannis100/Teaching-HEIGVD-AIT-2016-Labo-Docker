@@ -1,0 +1,2 @@
+root@28c02756128a:/# ls /nodes/
+efefab29b776

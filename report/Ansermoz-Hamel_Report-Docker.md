@@ -273,6 +273,8 @@ https://ypereirareis.github.io/blog/2016/02/15/docker-image-size-optimization/
 
     In addition, provide a log file containing the output of the `docker ps` console. One file expected.
 
+    *Lors de la manipulation pour stopper s2, je me suis planté et j'ai aussi supprimé les containers ha et s1, de ce fait les id ne sont pas les même que pour les questions 1-2 de cette task*
+
 4. (Optional:) Propose a different approach to manage the list of backend nodes. You do not need to implement it. You can also propose your own tools or the ones you discovered online. In that case, do not forget to cite your references.
 
 
