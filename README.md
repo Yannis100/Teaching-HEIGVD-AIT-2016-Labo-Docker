@@ -138,9 +138,9 @@ give in your report the reference of the question you are answering.
    approach at a high level.
 
 4. <a name="M4"></a>**[M4]** You probably noticed that the list of web
-  application nodes is hardcoded in the load balancer
-  configuration. How can we manage the web app nodes in a more dynamic
-  fashion?
+    application nodes is hardcoded in the load balancer
+    configuration. How can we manage the web app nodes in a more dynamic
+    fashion?
 
 5. <a name="M5"></a>**[M5]** In the physical or virtual machines of a
    typical infrastructure we tend to have not only one main process
@@ -506,7 +506,7 @@ Do the same in the `webapp`Docker file with the following replacement:
 # Copy the S6 service and make the run script executable
 COPY services/node /etc/services.d/node
 RUN chmod +x /etc/services.d/node/run
-```  
+```
 
 **References**:
 
@@ -1758,11 +1758,11 @@ and reacts to nodes coming and going!
    applications running. Additional screenshots are welcome to see a
    sequence of experimentations like shutting down a node and starting
    more nodes.
-   
+
    Also provide the output of `docker ps` in a log file. At least 
    one file is expected. You can provide one output per step of your
    experimentation according to your screenshots.
-   
+
 2. Give your own feelings about the final solution. Propose
    improvements or ways to do the things differently. If any, provide
    references to your readings for the improvements.

@@ -214,10 +214,11 @@ https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
 https://www.codacy.com/blog/five-ways-to-slim-your-docker-images/
 https://medium.com/@chamilad/docker-image-size-concerns-out-of-the-window-squash-with-confidence-796f7c48f5c6
 https://ypereirareis.github.io/blog/2016/02/15/docker-image-size-optimization/
+https://stackoverflow.com/questions/41764336/how-does-the-new-docker-squash-work
 
 *Le fait d'inclure par inadvertance des fichiers qui ne sont pas nécessaires à la construction d'une image entraîne un contexte de construction et une taille d'image plus grands. Cela peut augmenter le temps de construction de l'image, le temps de la tirer (pull) et de la pousser, et la taille d'exécution du conteneur.*
 
-*Les builds multi-étapes (multi-stage builds) vous permettent de réduire considérablement la taille de votre image finale, sans avoir à lutter pour réduire le nombre de couches et de fichiers intermédiaires.*
+*Les builds multi-étapes (multi-stage builds, plusieurs FROM dans un Dockerfile) vous permettent de réduire considérablement la taille de votre image finale, sans avoir à lutter pour réduire le nombre de couches et de fichiers intermédiaires.*
 *Parce qu'une image est construite au cours de l'étape finale du processus de construction, vous pouvez minimiser les couches d'image en utilisant le cache de construction.*
 *Par exemple, si votre build contient plusieurs couches, vous pouvez les classer par ordre décroissant de la moins fréquemment modifiée (pour vous assurer que le cache de build est réutilisable) à la plus fréquemment modifiée*
 
@@ -291,6 +292,8 @@ https://ypereirareis.github.io/blog/2016/02/15/docker-image-size-optimization/
 
 2. Give your own feelings about the final solution. Propose improvements or ways to do the things differently. If any, provide references to your readings for the improvements.
 
+   *Use updated version of the tools*
+
 3. (Optional:) Present a live demo where you add and remove a backend container.
 
 
@@ -324,5 +327,3 @@ C'était dû aux retours à la ligne au format windows et cela empechait serf de
 
 
 
-
-https://stackoverflow.com/questions/41764336/how-does-the-new-docker-squash-work
