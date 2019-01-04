@@ -1,0 +1,36 @@
+vagrant@ubuntu-14:~$ docker logs s1
+[s6-init] making user provided files available at /var/run/s6/etc...exited 0.
+[s6-init] ensuring user provided files have correct perms...exited 0.
+[fix-attrs.d] applying ownership & permissions fixes...
+[fix-attrs.d] done.
+[cont-init.d] executing container initialization scripts...
+[cont-init.d] done.
+[services.d] starting services
+[services.d] done.
+/opt/bin/serf agent --join ha --tag role=backend
+==> Starting Serf agent...
+==> Starting Serf agent RPC...
+==> Serf agent running!
+         Node name: 'c045d6aa89e1'
+         Bind addr: '0.0.0.0:7946'
+          RPC addr: '127.0.0.1:7373'
+         Encrypted: false
+          Snapshot: false
+           Profile: lan
+==> Joining cluster...(replay: false)
+    Join completed. Synced with 1 initial agents
+
+==> Log data will now stream in as it occurs:
+
+    2018/12/19 07:43:47 [INFO] agent: Serf agent starting
+    2018/12/19 07:43:47 [INFO] serf: EventMemberJoin: c045d6aa89e1 172.18.0.3
+    2018/12/19 07:43:47 [INFO] agent: joining: [ha] replay: false
+    2018/12/19 07:43:47 [INFO] serf: EventMemberJoin: 6621852f870b 172.18.0.2
+    2018/12/19 07:43:47 [INFO] agent: joined: 1 nodes
+    2018/12/19 07:43:48 [INFO] agent: Received event: member-join
+Application started
+HEAD / 200 39.227 ms - 114
+HEAD / 200 12.201 ms - 114
+HEAD / 200 4.139 ms - 114
+HEAD / 200 2.708 ms - 114
+HEAD / 200 2.879 ms - 114
