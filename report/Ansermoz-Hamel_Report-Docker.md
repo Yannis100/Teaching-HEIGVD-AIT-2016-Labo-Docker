@@ -85,7 +85,11 @@
 **Deliverables**:
 
 1. Take a screenshot of the stats page of HAProxy at <http://192.168.42.42:1936>. You should see your backend nodes. It should be really similar to the screenshot of the previous task.
+
+   ![01a](../logs/task 1/01a.png)
+
 2. Describe your difficulties for this task and your understanding of what is happening during this task. Explain in your own words why are we installing a process supervisor. Do not hesitate to do more research and to find more articles on that topic to illustrate the problem.
+   *Dans la philosophie docker, chaque containet ne devrait tourner qu'un seul process.*
 
 
 
@@ -100,7 +104,7 @@ They try to connect the `Serf` cluster via `ha` container which is not running.
 
 So the reverse proxy is not working but what we can do at least is to start the containers beginning by `ha` and then backend nodes. It will make the `Serf` part working and that's what we are working on at the moment and in the next task.
 
-Deliverables**:
+**Deliverables**:
 
 1. Provide the docker log output for each of the containers: `ha`, `s1` and `s2`. You need to create a folder `logs` in your repository to store the files separately from the lab report. For each lab task create a folder and name it using the task number. No need to create a folder when there are no logs.
 
@@ -125,6 +129,11 @@ Deliverables**:
    So the reverse proxy is not working but what we can do at least is to start the containers beginning by `ha` and then backend nodes. It will make the `Serf` part working and that's what we are working on at the moment and in the next task.)
 
 3. Give an explanation on how `Serf` is working. Read the official website to get more details about the `GOSSIP` protocol used in `Serf`. Try to find other solutions that can be used to solve similar situations where we need some auto-discovery mechanism.
+   *GOSSIP est basé sur SWIM*
+   *Serf commence par rejoindre un cluster existant ou en créer un nouveau. Si vous démarrez un nouveau cluster, d'autres nœuds devraient s'y joindre. Les nouveaux nœuds d'un cluster existant doivent recevoir l'adresse d'au moins un membre existant pour pouvoir rejoindre le cluster. Le nouveau membre fait une synchronisation d'état complète avec le membre existant sur TCP et commence à raconter son existence (gossiping en anglais) au cluster*
+   *Gossip se fait sur UDP avec un fanout et un intervalle configurable mais fixe.Les échanges d'état complets avec un noeud aléatoire se font périodiquement sur TCP, mais beaucoup moins souvent que les messages de ragots (gossip). Cela augmente la probabilité que la liste des membres converge correctement puisque l'état complet est échangé et fusionné. L'intervalle entre les échanges d'états complets est configurable ou peut être entièrement désactivé.*
+   *https://www.serf.io/docs/internals/gossip.html*
+   *Alternatives : zookeeper, etcd, eureka, smartstack*
 
 
 
@@ -215,7 +224,7 @@ Logging Driver: json-file
 ```
 
 *Pour en revenir à la question de la différence entre les 3 RUN séparés ligne par ligne et ceux en une ligne avec des && : dans le premier cas 3 nouvelles couches (layers) seront crées (cf docker history au dessus) tandis que dans le cas des &&, une seule couche (plus grande) sera créé*
-*De plus, dans le cas spécifique des commandes `apt-get update` et `apt-get install` il est nécessaire de les lancer en 1 seul RUN statement car dans le cas contraire si on ajout un install l'utilisation du cache pour reconstruire l'image décidera que seul le install a changé et non le update et de ce fait ne rebuildera pas la couche du update et l'on risque ainsi de se retrouver avec des versions obsolètes.*
+*De plus, dans le cas spécifique des commandes `apt-get update` et `apt-get install` il est nécessaire de les lancer en 1 seul RUN statement car dans le cas contraire si on ajoute un install l'utilisation du cache pour reconstruire l'image décidera que seul le install a changé et non le update et de ce fait ne rebuildera pas la couche du update et l'on risque ainsi de se retrouver avec des versions obsolètes.*
 *Dans le cas de commandes COPY, il est préférable de copier les fichiers individuellement, plutôt que tous à la fois. Ceci garantit que le cache de compilation de chaque étape n'est invalidé (forçant l'étape à être réexécutée) que si les fichiers spécifiquement requis changent. De plus COPY est nettement préféré à ADD (dû à des fonctionnalités de ADD rarement exploitées telle que tar auto-extraction)*
 
 There are also some articles about techniques to reduce the image size. Try to find them. They are talking about `squashing` or `flattening` images.
@@ -352,7 +361,7 @@ C'était dû aux retours à la ligne au format windows et cela empechait serf de
 
 ## <a name="conclusion">Conclusion</a>
 
-
+Nous avons dû effectuer passablement de configurations et des scripts crées manuellement afin d'arriver au résulat dynamique final. On utilise plusieurs outils en interropérabilité, une solution tout en 1 tel que Consul ou smartstack est peut-être plus simple à mettre en place.
 
 
 
