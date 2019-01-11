@@ -29,7 +29,7 @@
 
 1. <a name="M1"></a>**[M1]** Do you think we can use the current solution for a production environment? What are the main problems when deploying it in a production environment?
 
-     *Le plus grand problème à ce moment de l'implémentation est que "rien" n'est dynamique : si on veut ajouter ou supprimer un serveur backend derrière HAProxy on doit le faire manuellement dans le fichier de config puis rebuild l'image et relancer le container. Dans un environnement de production on aimerait pouvoir plus simplement et en ayant moins voir aucun impact négatif ajouter ou supprimer des serveurs backend*
+     *Le plus grand problème à ce moment de l'implémentation est que "rien" n'est dynamique : si on veut ajouter ou supprimer un serveur backend derrière HAProxy on doit le faire manuellement dans le fichier de config puis rebuild l'image et relancer le container. Dans un environnement de production on aimerait pouvoir plus simplement et en ayant moins voir aucun impact négatif sur la disponibilité lorsque l'on veut ajouter ou supprimer des serveurs backend*
 
 2. <a name="M2"></a>**[M2]** Describe what you need to do to add new `webapp` container to the infrastructure. Give the exact steps of what you have to do without modifiying the way the things are
    done. Hint: You probably have to modify some configuration and script files in a Docker image.
@@ -40,10 +40,12 @@
 
      *Il serait préférable d'avoir une infrastructure plus dynamique qui simplifie l'ajout d'un serveur `webapp`sans avoir à manipuler de fichiers de config/scripts, par exemple que le serveur webapp s'enregistre auprès du load balancer et que ce dernier l'ajoute automatiquement à la liste des nodes*
 
+     *Par exemple docker swarm pourrait être utilisé pour pallier aux problèmes m1-2*
+
 4. <a name="M4"></a>**[M4]** You probably noticed that the list of web application nodes is hardcoded in the load balancer configuration. How can we manage the web app nodes in a more dynamic
      fashion?
 
-     *Avec un outil permettant de gérer les membership d'un cluster. By using some eventhandler (for example webapp node joining) e.g. serf and some scripts that edit HAProxy config on the fly.*
+     *Avec un outil permettant de gérer les membership d'un cluster. By using some eventhandler (for example webapp node joining) e.g. serf and some scripts that edit HAProxy config on the fly based on a template.*
 
 5. <a name="M5"></a>**[M5]** In the physical or virtual machines of a typical infrastructure we tend to have not only one main process (like the web server or the load balancer) running, but a few
    additional processes on the side to perform management tasks.
@@ -53,7 +55,7 @@
 
    Do you think our current solution is able to run additional management processes beside the main web server / load balancer process in a container? If no, what is missing / required to reach the goal? If yes, how to proceed to run for example a log forwarding process?
 
-   *Il faut implémenter un outil de supervision, tel que s6. s6-overlay est particulièrement adapté car il inclut aussi les dépendances et une configuration prévue pour une utilisation avec docker*
+   *Non, de base 1 seul process va tourner dans le container. Il faut implémenter un outil de supervision, tel que s6. s6-overlay est particulièrement adapté car il inclut aussi les dépendances et une configuration prévue pour une utilisation avec docker et sa philosophie*
 
 6. <a name="M6"></a>**[M6]** In our current solution, although the load balancer configuration is changing dynamically, it doesn't follow dynamically the configuration of our distributed system when
    web servers are added or removed. If we take a closer look at the `run.sh` script, we see two calls to `sed` which will replace two lines in the `haproxy.cfg` configuration file just before we start `haproxy`. You clearly see that the configuration file has two lines and the script will replace these two lines.
@@ -89,7 +91,7 @@
    ![01a](../logs/task 1/01a.png)
 
 2. Describe your difficulties for this task and your understanding of what is happening during this task. Explain in your own words why are we installing a process supervisor. Do not hesitate to do more research and to find more articles on that topic to illustrate the problem.
-   *Dans la philosophie docker, chaque containet ne devrait tourner qu'un seul process.*
+   *Dans la philosophie docker, chaque container ne devrait tourner qu'un seul process. Grâce à s6 qui est un outil de supervision de processus (process supervision suite) on peut faire tourner plusieurs process sous le même PID (ici 1)*
 
 
 
@@ -127,6 +129,8 @@ So the reverse proxy is not working but what we can do at least is to start the 
    They try to connect the `Serf` cluster via `ha` container which is not running.
 
    So the reverse proxy is not working but what we can do at least is to start the containers beginning by `ha` and then backend nodes. It will make the `Serf` part working and that's what we are working on at the moment and in the next task.)
+
+   *Il faut démarrer les containers dans un certain ordre car le serf agent est lancé qu'une fois au début et les webapp n'ont pas le paramètre --replay donc si ha n'a pas encore join, les webapp ne tenterons de s'enregister qu'une fois*
 
 3. Give an explanation on how `Serf` is working. Read the official website to get more details about the `GOSSIP` protocol used in `Serf`. Try to find other solutions that can be used to solve similar situations where we need some auto-discovery mechanism.
    *GOSSIP est basé sur SWIM*
